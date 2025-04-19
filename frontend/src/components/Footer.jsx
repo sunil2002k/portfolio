@@ -52,7 +52,7 @@ const Footer = () => {
           <motion.a
             whileHover={{ y: -4 }}
             whileTap={{ scale: 0.9 }}
-            href="https://linkedin.com/in/yourprofile"
+            href="https://www.linkedin.com/in/sunil-kunwar-710368303"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white hover:text-purple-400 transition-all duration-300 p-2 rounded-full hover:bg-white/5"

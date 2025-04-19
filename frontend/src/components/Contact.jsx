@@ -16,15 +16,15 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus(null);
-    
+  
     try {
-      const res = await axios.post('http://localhost:3001/contact', formData);
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/contact`, formData);
       setSubmitStatus({ success: true, message: res.data.message });
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
-      setSubmitStatus({ 
-        success: false, 
-        message: error.response?.data?.message || 'Failed to send message' 
+      setSubmitStatus({
+        success: false,
+        message: error.response?.data?.message || 'Failed to send message',
       });
     } finally {
       setIsSubmitting(false);
