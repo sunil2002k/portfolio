@@ -214,14 +214,14 @@ const Contact = () => {
           <div className="flex justify-center space-x-6">
             <motion.a 
               whileHover={{ y: -3 }}
-              href="mailto:hello@example.com" 
+              href="kunwarsunil093@gmail.com" 
               className="text-gray-300 hover:text-purple-400 transition-colors"
             >
               ✉️ Email
             </motion.a>
             <motion.a 
               whileHover={{ y: -3 }}
-              href="https://linkedin.com" 
+              href="https://www.linkedin.com/in/sunil-kunwar-710368303" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-gray-300 hover:text-blue-400 transition-colors"
@@ -230,7 +230,7 @@ const Contact = () => {
             </motion.a>
             <motion.a 
               whileHover={{ y: -3 }}
-              href="https://github.com" 
+              href="https://github.com/sunil2002k" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-gray-300 hover:text-white transition-colors"
