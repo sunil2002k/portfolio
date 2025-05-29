@@ -14,7 +14,7 @@ fetchData()},[])
   return (
     <>
     <div>Github followers  {data.followers}</div>
-    <img src={data.avatar_url }alt="git picture" className='h-10 w-10 rounded-[50%]   ' />
+    <img src={data.avatar_url }alt="git picture" className='h-10 w-10 rounded-[50%]' />
     </>
   )
 }

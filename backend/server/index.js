@@ -5,8 +5,15 @@ require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const cors = require("cors");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://sunilkunwar.com.np", // Allow requests from your frontend domain
+    methods: ["GET", "POST"], // Specify allowed HTTP methods
+    credentials: true, // If needed for cookies or authentication
+  })
+);
 app.use(express.json());
 
 app.post("/contact", async (req, res) => {

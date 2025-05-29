@@ -1,5 +1,3 @@
-// components/Navbar.jsx
-
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
