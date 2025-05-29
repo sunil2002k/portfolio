@@ -8,10 +8,13 @@ const PORT = process.env.PORT || 3001;
 
 app.use(
   cors({
-    origin: ["https://sunilkunwar.com.np",
-    "http://localhost:3000", ],// Allow requests from your frontend domain
-    methods: ["GET", "POST"], // Specify allowed HTTP methods
-    credentials: true, // If needed for cookies or authentication
+    origin: [
+      "https://www.sunilkunwar.com.np", // Your production domain with www.
+      "https://sunilkunwar.com.np",     // Your production domain without www.
+      "http://localhost:3000"           // For your local frontend development
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
   })
 );
 app.use(express.json());
