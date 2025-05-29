@@ -5,11 +5,11 @@ require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const cors = require("cors");
 
 app.use(
   cors({
-    origin: "https://sunilkunwar.com.np", // Allow requests from your frontend domain
+    origin: ["https://sunilkunwar.com.np",
+    "http://localhost:3000", ],// Allow requests from your frontend domain
     methods: ["GET", "POST"], // Specify allowed HTTP methods
     credentials: true, // If needed for cookies or authentication
   })
