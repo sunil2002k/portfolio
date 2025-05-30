@@ -116,7 +116,7 @@ const Home = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mt-6 text-lg sm:text-xl text-gray-300/90 leading-relaxed max-w-[90%]"
         >
-          A passionate developer, building <span className="text-purple-300 font-medium">MERN magic</span>, and
+          A developer, building <span className="text-purple-300 font-medium">MERN magic</span>, and
           <span className="text-pink-300 font-medium"> soulful UIs</span> — one line of code at a time.
         </motion.p>
         
@@ -173,22 +173,23 @@ const Home = () => {
           className="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6"
         >
           <Link
-            to="/contact"
-            className="relative px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-lg hover:shadow-purple-500/40 flex items-center gap-2 overflow-hidden group"
-            onMouseEnter={() => setHoveredButton("contact")}
-            onMouseLeave={() => setHoveredButton(null)}
-          >
-            <AnimatePresence>
-              {hoveredButton === "contact" && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent"
-                />
-              )}
-            </AnimatePresence>
-            <span className="relative z-10">Contact me</span>
+  to="/contact"
+  className="relative px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-lg hover:shadow-purple-500/40 flex items-center gap-2 overflow-hidden group active:scale-[0.98]" // Added active:scale
+  onMouseEnter={() => setHoveredButton("contact")}
+  onMouseLeave={() => setHoveredButton(null)}
+>
+  <AnimatePresence>
+    {hoveredButton === "contact" && (
+      <motion.span
+        initial={{ scale: 0, opacity: 0 }} // Added opacity
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0, opacity: 0 }}
+        transition={{ duration: 0.3 }} // Faster transition for immediate feedback
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/30 via-transparent to-transparent" // Slightly stronger gradient
+      />
+    )}
+  </AnimatePresence>
+  <span className="relative z-10">Contact me</span>
             <motion.span 
               className="relative z-10 text-lg"
               animate={{ 
