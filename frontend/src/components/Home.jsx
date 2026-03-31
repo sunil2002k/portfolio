@@ -1,255 +1,574 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../../CustomHooks/useOnlineStatus";
 import { FaReact, FaNodeJs } from "react-icons/fa";
 import { SiMongodb, SiExpress, SiTailwindcss } from "react-icons/si";
-import { BsRocketFill, BsFileEarmarkArrowDownFill } from "react-icons/bs";
 
 const Home = () => {
   const online = useOnlineStatus();
-  const isOnline = online ? "Online" : "Offline";
-  const [hoveredButton, setHoveredButton] = React.useState(null);
+  const [tick, setTick] = useState(0);
 
-  const floatingShapes = [
-    { id: 1, top: "15%", left: "10%", color: "bg-purple-900/10", size: "w-64 h-64", animation: "animate-float" },
-    { id: 2, top: "60%", left: "75%", color: "bg-indigo-900/10", size: "w-80 h-80", animation: "animate-float-delay" },
-    { id: 3, top: "30%", left: "80%", color: "bg-cyan-900/10", size: "w-48 h-48", animation: "animate-float-reverse" },
-    { id: 4, top: "70%", left: "15%", color: "bg-pink-900/10", size: "w-56 h-56", animation: "animate-float-slow" },
-  ];
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const techStack = [
-    { name: "React", icon: <FaReact className="text-blue-400" /> },
-    { name: "Node.js", icon: <FaNodeJs className="text-green-500" /> },
-    { name: "MongoDB", icon: <SiMongodb className="text-green-400" /> },
-    { name: "Express", icon: <SiExpress className="text-gray-100" /> },
-    { name: "TailwindCSS", icon: <SiTailwindcss className="text-cyan-300" /> },
+    { name: "React", icon: <FaReact /> },
+    { name: "Node.js", icon: <FaNodeJs /> },
+    { name: "MongoDB", icon: <SiMongodb /> },
+    { name: "Express", icon: <SiExpress /> },
+    { name: "TailwindCSS", icon: <SiTailwindcss /> },
+  ];
+
+  const stats = [
+    { label: "Projects Shipped", value: "12+" },
+    { label: "Years Building", value: "3+" },
+    { label: "Stack", value: "MERN" },
   ];
 
   return (
-    <section
-      id="home"
-      className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#151515] to-[#1e1e1e] text-white px-4 sm:px-8 py-16 sm:py-24 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 lg:gap-24 relative overflow-hidden"
-    >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {floatingShapes.map((shape) => (
-          <div
-            key={shape.id}
-            className={`absolute rounded-full ${shape.color} ${shape.size} ${shape.animation} blur-3xl`}
-            style={{ top: shape.top, left: shape.left }}
-          />
-        ))}
-      </div>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
 
-      {/* Image Section with enhanced effects */}
-      <motion.div
-        initial={{ opacity: 0, x: -40, scale: 0.95 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-xs sm:max-w-sm rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:shadow-purple-500/30 group"
-      >
-        <img
-          src="hero1.png"
-          alt="Sunil Kunwar Hero"
-          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
-        />
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        {/* Floating tech badges */}
-        <div className="absolute -bottom-4 ml-14 flex flex-wrap  gap-2">
-          {techStack.slice(0, 3).map((tech, index) => (
-            <motion.span
-              key={tech.name}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: -20, opacity: 1 }}
-              transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
-              className="px-3 py-1 bg-black/70 backdrop-blur-sm rounded-full text-xs border border-white/10 flex items-center gap-1"
-            >
-              {tech.icon} {tech.name}
-            </motion.span>
-          ))}
-        </div>
-      </motion.div>
+        :root {
+          --ink: #0f0f0f;
+          --paper: #f4f1ea;
+          --acid: #b8ff57;
+          --indigo: #4a3aff;
+          --muted: #888;
+          --border: rgba(15,15,15,0.15);
+        }
 
-      {/* Text Content Section with enhanced UI */}
-      <motion.div
-        initial={{ opacity: 0, x: 40, scale: 0.98 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-2xl bg-white/5 border border-white/10 backdrop-blur-lg rounded-[2rem] shadow-2xl p-6 sm:p-8 hover:shadow-purple-500/20 transition-all duration-500 z-10"
-      >
-        {/* Interactive background gradient */}
-        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-        
-        {/* Animated title with character effects */}
-        <motion.h1
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent leading-tight"
-        >
-          {"Hey, I'm".split('').map((char, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              {char}
-            </motion.span>
-          ))}{' '}
-          <motion.span 
-            className="text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.4)]"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, type: "spring" }}
-          >
-            Sunil Kunwar
-          </motion.span>
-        </motion.h1>
-        
-        {/* Animated description text */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-6 text-lg sm:text-xl text-gray-300/90 leading-relaxed max-w-[90%]"
-        >
-          A developer, building <span className="text-purple-300 font-medium">MERN magic</span>, and
-          <span className="text-pink-300 font-medium"> soulful UIs</span> — one line of code at a time.
-        </motion.p>
-        
-        {/* Tech stack floating bubbles */}
-        <motion.div 
-          className="mt-6 flex flex-wrap gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          {techStack.map((tech) => (
+        .home-root {
+          min-height: 100vh;
+          background: var(--paper);
+          color: var(--ink);
+          font-family: 'DM Mono', monospace;
+          padding-top: 64px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Subtle grid texture */
+        .home-root::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background-image: 
+            linear-gradient(rgba(15,15,15,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(15,15,15,0.04) 1px, transparent 1px);
+          background-size: 48px 48px;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .home-inner {
+          position: relative;
+          z-index: 1;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 2rem;
+        }
+
+        /* ── Top ticker bar ── */
+        .ticker-bar {
+          border-bottom: 1.5px solid var(--ink);
+          padding: 10px 0;
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+          overflow: hidden;
+        }
+
+        .ticker-label {
+          font-size: 0.65rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: var(--muted);
+          white-space: nowrap;
+          border-right: 1px solid var(--border);
+          padding-right: 2rem;
+        }
+
+        .ticker-items {
+          display: flex;
+          gap: 3rem;
+          animation: ticker 20s linear infinite;
+          white-space: nowrap;
+        }
+
+        .ticker-item {
+          font-size: 0.7rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--muted);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .ticker-item .dot {
+          width: 5px; height: 5px;
+          background: var(--acid);
+          border-radius: 50%;
+          border: 1px solid var(--ink);
+        }
+
+        @keyframes ticker {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+
+        /* ── Hero grid ── */
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          border-bottom: 1.5px solid var(--ink);
+          min-height: calc(100vh - 120px);
+        }
+
+        /* Left panel */
+        .hero-left {
+          border-right: 1.5px solid var(--ink);
+          padding: 4rem 3rem 4rem 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .hero-eyebrow {
+          font-size: 0.65rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--muted);
+          margin-bottom: 2rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .hero-eyebrow::before {
+          content: '';
+          width: 24px; height: 1px;
+          background: var(--muted);
+        }
+
+        .hero-name {
+          font-family: 'Syne', sans-serif;
+          font-weight: 800;
+          font-size: clamp(3.5rem, 7vw, 6.5rem);
+          line-height: 0.95;
+          letter-spacing: -0.04em;
+          color: var(--ink);
+          margin-bottom: 2.5rem;
+        }
+
+        .hero-name .highlight {
+          display: block;
+          color: transparent;
+          -webkit-text-stroke: 2px var(--ink);
+          position: relative;
+        }
+
+        .hero-name .highlight::after {
+          content: 'Kunwar';
+          position: absolute;
+          left: 0;
+          color: var(--acid);
+          -webkit-text-stroke: 0;
+          clip-path: inset(0 100% 0 0);
+          animation: reveal-acid 1.2s 0.8s cubic-bezier(0.77,0,0.18,1) forwards;
+        }
+
+        @keyframes reveal-acid {
+          to { clip-path: inset(0 0% 0 0); }
+        }
+
+        .hero-bio {
+          font-size: 0.9rem;
+          line-height: 1.8;
+          color: #444;
+          max-width: 420px;
+          margin-bottom: 3rem;
+        }
+
+        .hero-actions {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .btn-primary {
+          font-family: 'DM Mono', monospace;
+          font-size: 0.7rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          text-decoration: none;
+          padding: 14px 28px;
+          background: var(--ink);
+          color: var(--paper);
+          border: 1.5px solid var(--ink);
+          transition: background 0.2s, color 0.2s;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .btn-primary:hover {
+          background: var(--acid);
+          color: var(--ink);
+          border-color: var(--ink);
+        }
+
+        .btn-secondary {
+          font-family: 'DM Mono', monospace;
+          font-size: 0.7rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          text-decoration: none;
+          padding: 14px 28px;
+          background: transparent;
+          color: var(--ink);
+          border: 1.5px solid var(--ink);
+          transition: background 0.2s, color 0.2s;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .btn-secondary:hover {
+          background: var(--ink);
+          color: var(--paper);
+        }
+
+        .hero-bottom-left {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+        }
+
+        .status-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.65rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          padding: 6px 14px;
+          border: 1.5px solid var(--ink);
+        }
+
+        .status-dot {
+          width: 7px; height: 7px;
+          border-radius: 50%;
+          background: #0f0;
+          border: 1px solid var(--ink);
+          animation: pulse-dot 2s infinite;
+        }
+
+        .status-dot.offline { background: #f00; }
+
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+
+        /* Right panel */
+        .hero-right {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .hero-image-wrap {
+          flex: 1;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 1.5px solid var(--ink);
+        }
+
+        .hero-image-wrap img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top;
+          filter: grayscale(20%) contrast(1.05);
+          transition: filter 0.5s;
+        }
+
+        .hero-image-wrap:hover img {
+          filter: grayscale(0%) contrast(1.1);
+        }
+
+        .hero-image-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, transparent 60%, rgba(244,241,234,0.3) 100%);
+        }
+
+        /* Index number */
+        .hero-index {
+          position: absolute;
+          top: 1.5rem;
+          right: 1.5rem;
+          font-family: 'Syne', sans-serif;
+          font-size: 5rem;
+          font-weight: 800;
+          color: rgba(255,255,255,0.15);
+          line-height: 1;
+          letter-spacing: -0.05em;
+          pointer-events: none;
+          text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Stats row */
+        .stats-row {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-cell {
+          padding: 1.5rem;
+          border-right: 1.5px solid var(--ink);
+        }
+
+        .stat-cell:last-child { border-right: none; }
+
+        .stat-value {
+          font-family: 'Syne', sans-serif;
+          font-size: 2rem;
+          font-weight: 800;
+          letter-spacing: -0.03em;
+          color: var(--ink);
+          line-height: 1;
+          margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+          font-size: 0.6rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          color: var(--muted);
+        }
+
+        /* ── Tech strip ── */
+        .tech-strip {
+          border-bottom: 1.5px solid var(--ink);
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+        }
+
+        .tech-strip-label {
+          font-size: 0.6rem;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: var(--muted);
+          white-space: nowrap;
+          padding: 1rem 1.5rem;
+          border-right: 1.5px solid var(--ink);
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        .tech-list {
+          display: flex;
+          gap: 0;
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+
+        .tech-list::-webkit-scrollbar { display: none; }
+
+        .tech-chip {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 1rem 1.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          border-right: 1px solid var(--border);
+          white-space: nowrap;
+          transition: background 0.15s;
+          color: var(--ink);
+        }
+
+        .tech-chip:hover {
+          background: var(--acid);
+        }
+
+        .tech-chip svg { font-size: 1rem; }
+
+        /* ── Bottom socials bar ── */
+        .socials-bar {
+          display: flex;
+          align-items: center;
+          padding: 1.2rem 0;
+          gap: 2rem;
+        }
+
+        .social-link {
+          font-size: 0.65rem;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: var(--muted);
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          transition: color 0.15s;
+        }
+
+        .social-link:hover { color: var(--ink); }
+
+        .social-link .ext { opacity: 0.4; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+          }
+          .hero-left {
+            border-right: none;
+            border-bottom: 1.5px solid var(--ink);
+            padding: 3rem 0 3rem 0;
+          }
+          .hero-right {
+            min-height: 60vw;
+          }
+          .hero-image-wrap { min-height: 350px; }
+        }
+      `}</style>
+
+      <main className="home-root">
+        <div className="home-inner">
+
+          {/* Ticker bar */}
+          <div className="ticker-bar">
+            <span className="ticker-label">Live Status</span>
+            <div className="ticker-items">
+              {[
+                'Full-Stack Developer',
+                'MERN Stack',
+                'Available for Work',
+                'Based in Nepal',
+                'Open Source Contributor',
+                'Full-Stack Developer',
+                'MERN Stack',
+                'Available for Work',
+                'Based in Nepal',
+                'Open Source Contributor',
+              ].map((item, i) => (
+                <span key={i} className="ticker-item">
+                  <span className="dot" />
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero grid */}
+          <div className="hero-grid">
+
+            {/* LEFT */}
             <motion.div
-              key={tech.name}
-              whileHover={{ y: -3, scale: 1.05 }}
-              className="px-3 py-1.5 bg-white/5 rounded-full border border-white/10 text-sm flex items-center gap-1.5"
+              className="hero-left"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span>{tech.icon}</span>
-              <span>{tech.name}</span>
+              <div>
+                <p className="hero-eyebrow">Portfolio · Full-Stack Dev</p>
+
+                <h1 className="hero-name">
+                  Hey, I'm
+                  <span>Sunil</span>
+                  <span className="highlight">Kunwar</span>
+                </h1>
+
+                <p className="hero-bio">
+                  Full-stack developer building precise, thoughtful software.
+                  I work across the stack — from database to interface — with a
+                  focus on clean systems and minimal complexity.
+                </p>
+
+                <div className="hero-actions">
+                  <Link to="/contact" className="btn-primary">
+                    Contact me <span>↗</span>
+                  </Link>
+                  <a href="/resume.pdf" download className="btn-secondary">
+                    Download CV <span>↓</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="hero-bottom-left">
+                <div className="status-pill">
+                  <span className={`status-dot${online ? '' : ' offline'}`} />
+                  You are {online ? 'Online' : 'Offline'}
+                </div>
+              </div>
             </motion.div>
-          ))}
-        </motion.div>
-        
-        {/* Enhanced Online Status Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className={`mt-6 inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${
-            online 
-              ? "bg-green-900/30 text-green-400 border border-green-500/30" 
-              : "bg-rose-900/30 text-rose-400 border border-rose-500/30"
-          } relative overflow-hidden group`}
-        >
-          <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className={`relative flex h-2.5 w-2.5 mr-2 ${
-            online ? "text-green-400" : "text-rose-400"
-          }`}>
-            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
-              online ? "bg-green-400" : "bg-rose-400"
-            } opacity-75`}></span>
-            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-              online ? "bg-green-400" : "bg-rose-400"
-            }`}></span>
-          </span>
-          <span>You are currently {isOnline}</span>
-          
-        </motion.div>
-        
-        {/* Interactive Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.5, type: "spring" }}
-          className="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6"
-        >
-          <Link
-  to="/contact"
-  className="relative px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-lg hover:shadow-purple-500/40 flex items-center gap-2 overflow-hidden group active:scale-[0.98]" // Added active:scale
-  onMouseEnter={() => setHoveredButton("contact")}
-  onMouseLeave={() => setHoveredButton(null)}
->
-  <AnimatePresence>
-    {hoveredButton === "contact" && (
-      <motion.span
-        initial={{ scale: 0, opacity: 0 }} // Added opacity
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0, opacity: 0 }}
-        transition={{ duration: 0.3 }} // Faster transition for immediate feedback
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/30 via-transparent to-transparent" // Slightly stronger gradient
-      />
-    )}
-  </AnimatePresence>
-  <span className="relative z-10">Contact me</span>
-            <motion.span 
-              className="relative z-10 text-lg"
-              animate={{ 
-                x: hoveredButton === "contact" ? [0, 2, -2, 0] : 0 
-              }}
-              transition={{ 
-                duration: 0.6,
-                times: [0, 0.2, 0.5, 0.8, 1],
-                repeat: hoveredButton === "contact" ? Infinity : 0
-              }}
-            >
-              <BsRocketFill />
-            </motion.span>
-          </Link>
-          
-          <a
-            href="/resume.pdf"  
-            download
-            className="relative px-6 py-3.5 rounded-xl border border-purple-400/50 hover:border-purple-400 hover:bg-purple-500/10 transition-all duration-300 font-medium flex items-center gap-2 overflow-hidden group"
-            onMouseEnter={() => setHoveredButton("resume")}
-            onMouseLeave={() => setHoveredButton(null)}
-          >
-            <AnimatePresence>
-              {hoveredButton === "resume" && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent"
-                />
-              )}
-            </AnimatePresence>
-            <span className="relative z-10">Download CV</span>
-            <motion.span 
-              className="relative z-10 text-lg"
-              animate={{ 
-                rotate: hoveredButton === "resume" ? [0, 10, -10, 0] : 0 
-              }}
-              transition={{ 
-                duration: 0.6,
-                times: [0, 0.2, 0.5, 0.8, 1],
-                repeat: hoveredButton === "resume" ? Infinity : 0
-              }}
-            >
-              <BsFileEarmarkArrowDownFill />
-            </motion.span>
-          </a>
-        </motion.div>
 
-        {/* Social proof/scrolling testimonials could be added here */}
-      </motion.div>
+            {/* RIGHT */}
+            <motion.div
+              className="hero-right"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.9, delay: 0.2 }}
+            >
+              <div className="hero-image-wrap">
+                <img src="hero1.png" alt="Sunil Kunwar" />
+                <div className="hero-image-overlay" />
+                <span className="hero-index">01</span>
+              </div>
 
-      {/* Decorative corner elements */}
-      <div className="absolute bottom-8 left-8 opacity-20">
-        <div className="w-16 h-16 border-t-2 border-l-2 border-purple-400 rounded-tl-xl"></div>
-      </div>
-      <div className="absolute top-8 right-8 opacity-20">
-        <div className="w-16 h-16 border-b-2 border-r-2 border-cyan-400 rounded-br-xl"></div>
-      </div>
-    </section>
+              <div className="stats-row">
+                {stats.map((s) => (
+                  <div key={s.label} className="stat-cell">
+                    <div className="stat-value">{s.value}</div>
+                    <div className="stat-label">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Tech strip */}
+          <div className="tech-strip">
+            <span className="tech-strip-label">Stack</span>
+            <div className="tech-list">
+              {techStack.map((t) => (
+                <div key={t.name} className="tech-chip">
+                  {t.icon} {t.name}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Socials bar */}
+          <div className="socials-bar">
+            <a href="mailto:kunwarsunil093@gmail.com" className="social-link">
+              Email <span className="ext">↗</span>
+            </a>
+            <a href="https://www.linkedin.com/in/sunil-kunwar-710368303" target="_blank" rel="noreferrer" className="social-link">
+              LinkedIn <span className="ext">↗</span>
+            </a>
+            <a href="https://github.com/sunil2002k" target="_blank" rel="noreferrer" className="social-link">
+              GitHub <span className="ext">↗</span>
+            </a>
+          </div>
+
+        </div>
+      </main>
+    </>
   );
 };
 
