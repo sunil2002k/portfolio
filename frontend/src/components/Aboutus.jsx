@@ -347,6 +347,38 @@ const Aboutus = () => {
           align-items: start;
         }
 
+        .experience-strip {
+          border-bottom: 1.5px solid var(--ink);
+          padding: 2.5rem 0;
+          display: grid;
+          grid-template-columns: 200px 1fr auto;
+          gap: 3rem;
+          align-items: start;
+        }
+
+        .experience-heading {
+          font-family: 'Syne', sans-serif;
+          font-size: 1.1rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          margin-bottom: 0.35rem;
+        }
+
+        .experience-role {
+          font-size: 0.75rem;
+          line-height: 1.7;
+          color: #555;
+        }
+
+        .experience-status {
+          border: 1px solid var(--ink);
+          padding: 0.45rem 0.7rem;
+          font-size: 0.6rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          white-space: nowrap;
+        }
+
         .bio-section-label {
           font-size: 0.6rem;
           text-transform: uppercase;
@@ -377,6 +409,8 @@ const Aboutus = () => {
           .about-layout { grid-template-columns: 1fr; }
           .about-content { border-right: none; border-bottom: 1.5px solid var(--ink); padding: 2.5rem 0; }
           .about-skills { padding: 2.5rem 0; }
+          .experience-strip { grid-template-columns: 1fr auto; gap: 1rem; }
+          .experience-strip .bio-section-label { grid-column: 1 / -1; }
           .bio-strip { grid-template-columns: 1fr; gap: 1.5rem; }
         }
       `}</style>
@@ -484,6 +518,18 @@ const Aboutus = () => {
                 </div>
               </div>
             </motion.div>
+          </div>
+
+          {/* Experience */}
+          <div className="experience-strip">
+            <span className="bio-section-label">Experience</span>
+            <div>
+              <h2 className="experience-heading">Cloudtech Services</h2>
+              <p className="experience-role">
+                LAMP Intern · Completed
+              </p>
+            </div>
+            <span className="experience-status">Internship</span>
           </div>
 
           {/* Bio strip */}
