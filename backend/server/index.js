@@ -1,43 +1,32 @@
 import express from "express";
 import nodemailer from "nodemailer";
 import cors from "cors";
-import arcjet, { detectBot, fixedWindow, shield } from "@arcjet/node";
-import { isSpoofedBot } from "@arcjet/inspect";
+import { rateLimit } from "express-rate-limit";
 import "dotenv/config";
 
 const app = express();
+app.set("trust proxy", 1);
+
 const PORT = process.env.PORT || 3001;
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-// ─────────────────────────────────────────────
-// Arcjet — initialized once, outside handlers
-// ─────────────────────────────────────────────
-const aj = arcjet({
-  key: process.env.ARCJET_KEY, // Add ARCJET_KEY to your .env
-  rules: [
-    // 1. Shield WAF — blocks SQLi, XSS, and OWASP Top 10 attacks
-    shield({
-      mode: "LIVE",
-    }),
-
-    // 2. Bot detection — block all automated clients
-    //    Allow curl so you can test locally with: curl -X POST ...
-    detectBot({
-      mode: "LIVE",
-      allow: [
-        "CURL",                   // local dev testing
-        "CATEGORY:MONITOR",       // uptime monitors (UptimeRobot etc.)
-        "CATEGORY:SEARCH_ENGINE", // Googlebot, Bingbot, etc.
-      ],
-    }),
-
-    // 3. Rate limiting — fixed window: 5 contact requests per 10 minutes per IP
-    //    Tight because this is a contact/email endpoint — abuse is costly
-    fixedWindow({
-      mode: "LIVE",
-      window: "10m",
-      max: 5,
-    }),
-  ],
+const contactRateLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    return res.status(429).json({
+      success: false,
+      message: "Too many requests. Please wait a few minutes and try again.",
+    });
+  },
 });
 
 // ─────────────────────────────────────────────
@@ -60,79 +49,13 @@ app.use(
 app.use(express.json());
 
 // ─────────────────────────────────────────────
-// Arcjet middleware helper
-// Wraps aj.protect() and returns structured error responses
-// ─────────────────────────────────────────────
-async function arcjetProtect(req, res) {
-  const decision = await aj.protect(req);
-
-  // Log the decision in non-production for debugging
-  if (process.env.NODE_ENV !== "production") {
-    console.log("[Arcjet]", {
-      conclusion: decision.conclusion,
-      reason: decision.reason,
-      ip: decision.ip?.address,
-    });
-  }
-
-  if (decision.isDenied()) {
-    if (decision.reason.isRateLimit()) {
-      res.status(429).json({
-        success: false,
-        message: "Too many requests. Please wait a few minutes and try again.",
-      });
-      return false;
-    }
-
-    if (decision.reason.isBot()) {
-      res.status(403).json({
-        success: false,
-        message: "Automated requests are not allowed.",
-      });
-      return false;
-    }
-
-    if (decision.reason.isShield()) {
-      res.status(403).json({
-        success: false,
-        message: "Request blocked.",
-      });
-      return false;
-    }
-
-    // Generic deny fallback
-    res.status(403).json({
-      success: false,
-      message: "Request denied.",
-    });
-    return false;
-  }
-
-  // Extra check: block spoofed bots even if decision is ALLOW
-  // (e.g. something claiming to be Googlebot but with the wrong IP)
-  if (decision.results.some(isSpoofedBot)) {
-    res.status(403).json({
-      success: false,
-      message: "Spoofed bot detected.",
-    });
-    return false;
-  }
-
-  return true;
-}
-
-// ─────────────────────────────────────────────
 // Routes
 // ─────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Portfolio API is live." });
 });
 
-app.post("/contact", async (req, res) => {
-  // Run Arcjet checks first — bail out early if blocked
-  const allowed = await arcjetProtect(req, res);
-  if (!allowed) return;
-
+app.post("/contact", contactRateLimiter, async (req, res) => {
   const { name, email, message } = req.body;
 
   // Basic input validation
@@ -143,21 +66,20 @@ app.post("/contact", async (req, res) => {
     });
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error("[Contact Error] Email service credentials are not configured.");
+    return res.status(500).json({
+      success: false,
+      message: "Email service is not configured.",
     });
+  }
 
-    const mailOptions = {
-      from: `"${name}" <${process.env.EMAIL_USER}>`, // use your own address as sender to avoid spoofing
-      replyTo: email,                                 // replies go back to the visitor
-      to: "kunwarsunil093@gmail.com",
-      subject: `Portfolio contact from ${name}`,
-      html: `
+  const mailOptions = {
+    from: `"${name}" <${process.env.EMAIL_USER}>`, // use your own address as sender to avoid spoofing
+    replyTo: email,                                 // replies go back to the visitor
+    to: "kunwarsunil093@gmail.com",
+    subject: `Portfolio contact from ${name}`,
+    html: `
         <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:24px;border:1px solid #e5e5e5;border-radius:8px;">
           <h2 style="margin:0 0 16px;font-size:1.2rem;color:#0f0f0f;">New contact message</h2>
           <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
@@ -176,14 +98,21 @@ app.post("/contact", async (req, res) => {
           </table>
         </div>
       `,
-    };
+  };
 
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: "Message sent successfully ✨" });
-  } catch (error) {
-    console.error("[Contact Error]", error);
-    res.status(500).json({ success: false, message: "Failed to send message." });
-  }
+  setImmediate(async () => {
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("[Contact] Email sent successfully.");
+    } catch (error) {
+      console.error("[Contact Email Error]", error);
+    }
+  });
+
+  return res.status(202).json({
+    success: true,
+    message: "Thanks for reaching out! Your message has been received.",
+  });
 });
 
 // ─────────────────────────────────────────────
